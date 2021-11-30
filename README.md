@@ -1,1 +1,17 @@
-# BeiyanLuansheng.github.io
+# 北言栾生的记忆档案
+
+## 建站
+
+本站点由 Jekyll 生成，采用 Chirpy 主题，具体操作参见建站引导
+
+[如何在 GitHub 上写博客？ - 少数派的回答 - 知乎](https://www.zhihu.com/question/20962496/answer/677815713)
+
+## 内容
+
+内容计划分三大块
+
+- 技术积累
+
+- 随笔&词作
+
+- 大学四年的学习笔记
