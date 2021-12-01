@@ -114,54 +114,7 @@ Internet网络层主机、路由器网络层主要功能：
 
 ### 4.4.1 IP数据报
 
-``html
-<table>
-    <tr>
-        <td>0</td><td/><td/><td/>
-        <td>4</td><td/><td/><td/>
-        <td>8</td><td/><td/><td/>
-        <td>12</td><td/><td/><td/>
-        <td>16</td><td/><td/><td/>
-        <td>20</td><td/><td/><td/>
-        <td>24</td><td/><td/><td>31</td>
-    </tr>
-    <tr>
-        <td colspan="4"><b>版本号</b>：<br/>4→IPv4<br/>6 → IPv6</td>
-        <td colspan="4"><b>首部长度</b>：IP分组首部长度，以4字节为单位</td>
-        <td colspan="8"><b>服务类型(TOS)</b>：<br/>指示期望获得哪种类型的服务，只有在网络提供区分服务时使用，一般情况下不使用，Internet不提供区分服务，所以通常IP分组里该值为00H</td>
-        <td colspan="16"><b>总长度</b>：<br/>IP分组的总字节数(首部+数据)<br/>最大65535B，最小20B</td>
-    </tr>
-    <tr>
-        <td colspan="16" rowspan="2"><b>标识</b>：IP协议利用一个计数器，每产生IP分组计数器加1，作为该IP分组的标识</td>
-        <td colspan="3"><b>标志位</b>：<br/>DF(Don'tFragment)为1禁止分片；为0允许分片;<br/>MF(MoreFragment)为1非最后一片；为0最后一片(或未分片)</td>
-        <td colspan="12" rowspan="2"><b>片偏移</b>：<br/>一个IP分组分片封装原IP分组数据的
-相对偏移量，片偏移字段以8字节为单位</td>
-    </tr>
-    <tr>
-        <td>保留</td>
-        <td>DF</td>
-        <td>MF</td>
-    </tr>
-    <tr>
-        <td colspan="8"><b>生存时间(TTL)</b>：<br/>IP分组在网络中可以通过的路由器数(跳步数)，路由器转发一次分组，TTL减1；如果TTL=0，路由器则丢弃该IP分组并向源主机发送一个ICMP数据包</td>
-        <td colspan="8"><b>协议</b>：<br/>指示IP分组封装的是哪个协议的数据包，它实现复用/分解<br/>6为TCP，表示封装的为TCP段；17为UDP，表示封装的是UDP数据报</td>
-        <td colspan="16"><b>首部检验和</b>：<br/>实现对IP分组首部的差错检测。计算校验和时，该字段置全0；采用反码算数运算求和，和的反码作为首部校验和字段；逐跳计算、逐跳校验</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32"><b>源IP地址</b>：标识发送分组的源主机/路由器(网络接口)的IP地址</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32"><b>目的IP地址</b>：标识接收分组的目的主机/路由器(网络接口)的IP地址</td>
-    </tr>
-    <tr align="center">
-        <td colspan="24"><b>选项字段</b>：长度可变，范围在1~40B之间：携带安全、源选路径、时间戳和路由记录等内容，但实际上很少被使用</td>
-        <td colspan="8"><b>填充</b>：范围在0~3B之间：补齐整个首部，符合32位对齐，即保证首部长度是4字节的倍数</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32">数据</td>
-    </tr>
-</table>
-```
+
 
 ### 4.4.2 IP分片
 
@@ -411,38 +364,6 @@ ICMP差错报告报文数据封装
 
 不允许分片：只能由源主机分，目的主机组
 
-```html
-<table>
-    <tr>
-        <td>0</td><td/><td/><td/>
-        <td>4</td><td/><td/><td/>
-        <td>8</td><td/><td/><td/>
-        <td>12</td><td/><td/><td/>
-        <td>16</td><td/><td/><td/>
-        <td>20</td><td/><td/><td/>
-        <td>24</td><td/><td/><td>31</td>
-    </tr>
-    <tr>
-        <td colspan="4"><b>版本号</b></td>
-        <td colspan="8"><b>优先级(priority)</b>：标识数据报的优先级</td>
-        <td colspan="20"><b>流标签(flow Label)</b>: 标识同一“流”中的数据报</td>
-    </tr>
-    <tr>
-        <td colspan="16"  align="center"><b>载荷长度</b>：最大64KB</td>
-        <td colspan="8"><b>下一个首部</b>：标识下一个选项首部或上层协议首部(如TCP首部)。如果有扩展首部则指向扩展首部位置，同时每个扩展首部的此字段指向下个扩展首部，最后一个扩展首部指向上层协议首部</td>
-        <td colspan="8"><b>跳步限制</b>: 对应于TTL</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32"><b>源IP地址</b>(128位)</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32"><b>目的IP地址</b>(128位)</td>
-    </tr>
-    <tr align="center">
-        <td colspan="32">载荷（扩展首部+数据）</td>
-    </tr>
-</table>
-```
 
 与IPv4相比的变化：
 
@@ -522,22 +443,7 @@ ICMP差错报告报文数据封装
 >
 > **N’**：已经找到最小费用路径的结点集合
 
-```
-初始化:
-N' = {u}
-for 所有结点v
-	if v毗邻u
-		then D(v) = c(u,v)
-	else D(v) = ∞
 
-Loop
-	找出不在 N’中的w ，满足D(w)最小
-	将w加入N'
-	更新w的所有不在N’中的邻居v的D(v) :
- 		D(v) = min( D(v), D(w) + c(w,v) )
-	 /*到达v的新费用或者是原先到达v的费用，或者是已知的到达w的最短路径费用加上w到v的费用 */
-until 所有结点在N’中
-```
 
 算法存在**震荡**(oscillations)可能：假设链路费用是该链路承载的通信量。初始为图1，此时会认为图2的代价更小，更新路由表为图2，又认为图3的代价更小，更新路由表为图3，又认为图2的代价更小，如此往复。如果一个B发往A的数据报恰好遇上了每次更新路由表，那么它将一直在B和B和D之间转发，直到TTL耗尽。
 
