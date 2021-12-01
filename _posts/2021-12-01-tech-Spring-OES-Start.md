@@ -1,21 +1,21 @@
 ---
-title: OES开始
+title: OES之一：开始
 author: BeiyanLuansheng
 date: 2021-12-01 20:51:26 +0800
-categories: [技术积累, Spring, OES]
+categories: [技术积累, Spring-OES]
 tags: [Spring, SpringBoot]
 math: true
 mermaid: true
 ---
 
-# 写在开始
+## 写在开始
 
 此系列将以我独立开发的一个 SpringBoot 项目为基础，跟随我的开发过程，记录我在开发过程中的步骤及问题
 
 项目地址 [https://github.com/BeiyanLuansheng/OES](https://github.com/BeiyanLuansheng/OES)
 
 
-# 项目初始
+## 项目初始
 
 创建名为OES的空maven工程，新建四个子模块，使项目目录结构如下（子模块以oes-start为例）
 
@@ -66,7 +66,7 @@ mermaid: true
 ```
 {: file='OES/pom.xml'}
 
-# SpringBoot 项目
+## SpringBoot 项目
 
 在 OES 的 pom.xml 文件中继承 SpringBoot
 
@@ -110,9 +110,12 @@ mermaid: true
 ```
 {: file="oes-start/pom.xml" }
 
-# 添加配置
+## 添加配置
 
 在 resources 目录下新建配置文件 application.yml
+
+> application.yml 和 application.properties 可以二选一，效果等同，不过 YML 是树形结构，更直观
+> 如果两各文件同时存在，先加载 YML，后加载的 application.properties 会覆盖 YML 中的配置
 
 ```yml
 server:
@@ -128,7 +131,7 @@ server:
 ```
 {: file="oes-start/resources/application.yml" }
 
-# 启动
+## 启动
 
 在 Application.java 中写
 
@@ -169,6 +172,6 @@ public class MainController {
 }
 ```
 
-然后启动项目，访问在 application.yml 中配置好的端口号，如 http://localhost:8089/test
+然后启动项目，访问在 application.yml 中配置好的端口号，如 [http://localhost:8089/test](http://localhost:8089/test)
 
 ![image-20211201215500404](/oes/image-20211201215500404.png)
