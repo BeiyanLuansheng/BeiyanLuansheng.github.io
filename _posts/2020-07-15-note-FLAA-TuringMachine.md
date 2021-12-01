@@ -20,7 +20,7 @@ mermaid: true
 - $B$ 是空格符，一个特殊的符号；
 - $F$ 是终结状态集；
 
-**例**：构造TM识别 $L = \{ a^nb^nc^n | n \ge 0 \}$ 
+**例**：构造TM识别 $L = \{ a^nb^nc^n \| n \ge 0 \}$ 
 
 初始状态：
 
@@ -84,7 +84,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 ![image-20200714212336132](/flaa/image-20200714212336132.png)
 
-**例**：构造双栈自动机识别 $L=\{a^nb^nc^n| n\ge 0\}$
+**例**：构造双栈自动机识别 $L=\{a^nb^nc^n\| n\ge 0\}$
 
 **解**：就是把所有的a先压栈，读b把b压栈的同时将a弹栈，最后用c把b弹栈
 
@@ -128,13 +128,13 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 ### 1. 递归可枚举语言
 
-能够由图灵机接受的语言称为**递归可枚举语言(recursively enumerable language)**：$L=\{w\;|\; q_0w┝^* \alpha p\beta,\; p\in F,\; \alpha,\;\beta\in \Gamma^*\}$
+能够由图灵机接受的语言称为**递归可枚举语言(recursively enumerable language)**：$L=\{w\;\|\; q_0w┝^* \alpha p\beta,\; p\in F,\; \alpha,\;\beta\in \Gamma^*\}$
 
 > 所有的正则语言都是递归可枚举语言，所有的上下文无关语言都是递归可枚举语言。
 
 ### 2. 非递归可枚举语言
 
-**定理**：$L_d=\{ w_i \;|\; w_i \in L(M_i) \}$ 就是一个**非递归可枚举语言(not-recursively enumerable language)**，即没有TM接受它。
+**定理**：$L_d=\{ w_i \;\|\; w_i \in L(M_i) \}$ 就是一个**非递归可枚举语言(not-recursively enumerable language)**，即没有TM接受它。
 
 **证明**：假设 $L_d$ 是以一个TM $M$ 的接受的语言 $L(M)$，则我们可以假设 $M$ 的编码为 $w_i$ ，即 $M=M_i$ 。然后判断 $w_i$ 是否在 $L_d$ 里：
 
@@ -165,7 +165,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 ### 4. 通用语言
 
-一个语言 $L$ ，它**是递归可枚举的但不是递归的**，即如果 $w\in L$ 则对应的 $M$ 接受它，但如果 $w\notin L$ 则 $M$ 不接受它且不会停机，则称它为**通用语言 (Universal language)**。$L_u = \{ (M,w) | w \in L(M) \}$ 就是一个通用语言，其中 $M$ 是对应图灵机的编码，$w$ 是图灵机接受的字符串，连接成 $Mw$，记为 $(M,w)$。
+一个语言 $L$ ，它**是递归可枚举的但不是递归的**，即如果 $w\in L$ 则对应的 $M$ 接受它，但如果 $w\notin L$ 则 $M$ 不接受它且不会停机，则称它为**通用语言 (Universal language)**。$L_u = \{ (M,w) \| w \in L(M) \}$ 就是一个通用语言，其中 $M$ 是对应图灵机的编码，$w$ 是图灵机接受的字符串，连接成 $Mw$，记为 $(M,w)$。
 
 **通用图灵机**：四条tape，以 $L(M) = \{0\}\{1\}^*$ 为例
 
@@ -198,6 +198,6 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 - Type 3：正则文法 regular grammar(RG) ---- A只能生成**终结符**或有**一个变元且都在左(右)侧**的式子
 
-  右线性文法 $A \rightarrow \alpha|\alpha B;\;\; A,B\in V,\;\alpha\in T^*$ 或左线性文法  $A \rightarrow \alpha|B\alpha;\;\; A,B\in V,\;\alpha\in T^*$ 
+  右线性文法 $A \rightarrow \alpha\|\alpha B;\;\; A,B\in V,\;\alpha\in T^*$ 或左线性文法  $A \rightarrow \alpha\|B\alpha;\;\; A,B\in V,\;\alpha\in T^*$ 
 
 >上下文有关文法对应上下文有关语言和线性有界自动机 (把图灵机中的空格符用 "[" 和 "]" 替换，处理的过程中读写头不能越过它们限定的范围)。

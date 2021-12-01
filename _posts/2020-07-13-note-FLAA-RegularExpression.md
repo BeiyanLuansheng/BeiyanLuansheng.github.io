@@ -22,15 +22,15 @@ mermaid: true
 >
 > - 每一个正则表达式都对应一个正则语言。
 
-例：$L=\{w\; |\; w \in { 0, 1 }^* \;and \;w \;has \;no \;pair \;of \;consecutive \;0’s \}$ 
+例：$L=\{w\; \|\; w \in { 0, 1 }^* \;and \;w \;has \;no \;pair \;of \;consecutive \;0’s \}$ 
 
 解：$1^* ( 0 1 1^* )^* ( 0 + \varepsilon)$ 或 $(1+01)^*(0 + \varepsilon)$ 
 
 > **练习**：RegExp for ($\Sigma=\{0,1\}$)
 >
-> 1. {w | w has exactly a single 1 }
-> 2. {w | w contains 001 }
-> 3. {w | length(w) ≥ 3 and the third symbol is 0 }
+> 1. {w \| w has exactly a single 1 }
+> 2. {w \| w contains 001 }
+> 3. {w \| length(w) ≥ 3 and the third symbol is 0 }
 > 4. What language does the RegExp $\phi^*$ represent ?
 
 ## 2. 正则表达式和FA的等价性
@@ -101,21 +101,21 @@ mermaid: true
 >
 >要证明**是正则的**可以使用构造DFA、NFA、ε-NFA、正则表达式的方法
 
-**正则语言的泵引理**：假设 L 的是正则的，则 $\exists n$，对 $\forall w \in L$，若$|w|\ge n $，则可将 w 划分为 $w=xyz$，其中
+**正则语言的泵引理**：假设 L 的是正则的，则 $\exists n$，对 $\forall w \in L$，若$\|w\|\ge n $，则可将 w 划分为 $w=xyz$，其中
 
-- $|xy|\le n$
-- $y \ne \varepsilon (|y|\ge 1)$
+- $\|xy\|\le n$
+- $y \ne \varepsilon (\|y\|\ge 1)$
 - $\forall k\ge 0,\, xy^kz \in L$
 
-例：证明 $L=\{0^n1^n \, | \, n\ge 0\}$ 不是正则的
+例：证明 $L=\{0^n1^n \, \| \, n\ge 0\}$ 不是正则的
 
-解：假设它是正则的。由泵引理可知，一定存在一个常数n，对每个长度不小于n的$w\in L$，可以被分成3的子串 $w=xyz$，且$|xy|\le n$，$y \ne \varepsilon$，$xy^kz \in L$
+解：假设它是正则的。由泵引理可知，一定存在一个常数n，对每个长度不小于n的$w\in L$，可以被分成3的子串 $w=xyz$，且$\|xy\|\le n$，$y \ne \varepsilon$，$xy^kz \in L$
 
-取 $w=0^n1^n \in L$，则 $w=0^n1^n=xyz$，由于$|xy|\le n$，故只能有 $y=0^m$，所以有 $xz=0^{n-|y|}1^n \in L$。
+取 $w=0^n1^n \in L$，则 $w=0^n1^n=xyz$，由于$\|xy\|\le n$，故只能有 $y=0^m$，所以有 $xz=0^{n-\|y\|}1^n \in L$。
 
 显然xz不是L中的字符串，所以矛盾，所以L不是正则的。
 
-> **解题方法**：上手先假设L是正则的，根据泵引理，选一个字符串w (最好是在开始的某个字符上重复了n次，即最开始是一个 $a^n$)，然后就可以泵掉 |y| 个 a，然后就不属于L了，就推出矛盾
+> **解题方法**：上手先假设L是正则的，根据泵引理，选一个字符串w (最好是在开始的某个字符上重复了n次，即最开始是一个 $a^n$)，然后就可以泵掉 \|y\| 个 a，然后就不属于L了，就推出矛盾
 
 ### 2. 封闭性
 
@@ -128,5 +128,5 @@ mermaid: true
 - 反：$L^R$
 - 闭包(星)：$L^*$
 - 连接：$LM$
-- 同态：$h:\; \Sigma^* \rightarrow \Gamma^*\qquad h(L)=\{ h(w)\, |\, w \in L \}$
+- 同态：$h:\; \Sigma^* \rightarrow \Gamma^*\qquad h(L)=\{ h(w)\, \|\, w \in L \}$
 - 逆同态

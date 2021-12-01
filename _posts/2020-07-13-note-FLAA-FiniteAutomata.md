@@ -56,8 +56,8 @@ mermaid: true
 
 DFA的目的是区分字符串，于是，按照如上例子构造的DFA就把字符串分成了两类：
 
-$L_1=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 0 \}\cup \{\,\varepsilon\,\} \\
-L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
+$L_1=\{ w\in\{0,1\}^* \;\|\; w \; end \; with \; 0 \}\cup \{\,\varepsilon\,\} \\
+L_2=\{ w\in\{0,1\}^* \;\|\; w \; end \; with \; 1 \}$
 
 而 $L_1$ 就是该DFA所接受的字符串集合，就能够判断任意的字符串 $w$，$w \in L_1$ 是否成立。
 
@@ -70,7 +70,7 @@ L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
 - 根据划分的等价类设置状态
 - 添加状态转移
 
-例：构造DFA接受 $L = \{x01y\; |\; x\; and\; y\; are\; consists\; of\; any\; number\; of\; 0’s\; and\; 1’s \}$
+例：构造DFA接受 $L = \{x01y\; \|\; x\; and\; y\; are\; consists\; of\; any\; number\; of\; 0’s\; and\; 1’s \}$
 
 - { ε,0,1,00,==01==,10,11,000,==001==,==010==,100,==011==,==101==,110,111,0000,==0001==,==0010==,==0100==,1000,==0011==,==0101==,==1001==, ...}
 
@@ -89,7 +89,7 @@ L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
 - 添加状态转移得到结果：
   ![image-20200630212921894](/flaa/image-20200630212921894.png)
 
-**定义**：若 $ A = (Q, Σ, δ, q_0, F )$  是一个 DFA，则 D 接受的语言为  $L(A) = \{w \in Σ^∗\; |\; \hatδ(q_0, w) \in F\}$ 。
+**定义**：若 $ A = (Q, Σ, δ, q_0, F )$  是一个 DFA，则 D 接受的语言为  $L(A) = \{w \in Σ^∗\; \|\; \hatδ(q_0, w) \in F\}$ 。
 
 ### 3. 正则语言
 
@@ -99,9 +99,9 @@ L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
 >
 > a) $\{\, 0\, \}^*$
 >
-> b) $\{\,w\; |\; w \in {0,1}^*\; and\; begin\; with\; 0\, \}$
+> b) $\{\,w\; \|\; w \in {0,1}^*\; and\; begin\; with\; 0\, \}$
 >
-> c) $\{\, w\;|\; w\; consists\; of\; any\; number\; of\; 0’s\; followed\; by \;any\; number \;of \;1’s \}$
+> c) $\{\, w\;\|\; w\; consists\; of\; any\; number\; of\; 0’s\; followed\; by \;any\; number \;of \;1’s \}$
 >
 > d) $\{\, \varepsilon\, \}$
 >
@@ -125,7 +125,7 @@ L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
 
 > 与DFA唯一的不同就是 $\delta$ 的象集是 $Q$ 的幂集，结果是一个集合
 
-例：构造NFA接受 $L_{x01} = \{ x01\; |\; x \;is \;any \;strings \;of \;0’s \;and \;1’s\, \}$
+例：构造NFA接受 $L_{x01} = \{ x01\; \|\; x \;is \;any \;strings \;of \;0’s \;and \;1’s\, \}$
 
 ![image-20200630232228079](/flaa/image-20200630232228079.png)
 
@@ -133,7 +133,7 @@ L_2=\{ w\in\{0,1\}^* \;|\; w \; end \; with \; 1 \}$
 
 $\delta(q1,\, 0)=\phi$ 表明NFA不接受这个输入，NFA可以简化这种记法，但DFA不行。
 
-**定义**：若 $A = (Q, Σ, δ, q_0, F )$  是一个 NFA，则 D 接受的语言为  $L(A) = \{w\; |\; \hatδ(q_0, w) \cap F \ne \phi\,\}$ 。
+**定义**：若 $A = (Q, Σ, δ, q_0, F )$  是一个 NFA，则 D 接受的语言为  $L(A) = \{w\; \|\; \hatδ(q_0, w) \cap F \ne \phi\,\}$ 。
 
 > 只需要有一条路能够让 $w$ 从 $q_0$ 走到终结状态就可以说NFA接受 $w$。这也是为什么它是非确定的。
 
@@ -153,11 +153,11 @@ $\delta(q1,\, 0)=\phi$ 表明NFA不接受这个输入，NFA可以简化这种记
 >
 >   给定一个NFA：$A= (Q_N,\;\Sigma,\;\delta_N ,\; q_0,\;F_N)$，构造一个对应的DFA：$B=(Q_D,\;\Sigma,\;\delta_D,\;q_0,\;F_D)$
 >
->   令 $Q_D=2^{Q_N}=\{S\; | \;S \subseteq Q_N\}$ 
+>   令 $Q_D=2^{Q_N}=\{S\; \| \;S \subseteq Q_N\}$ 
 >
 >   则 $\delta_D(S,\, a) = \bigcup\limits_{p\in S}\delta_N(p,\,a)$，因为$S$ 是 $Q_N$ 的一个子集，所以把 $S$ 中的每个元素在 $a$ 下确定状态后合并即可。
 >
->   则 $F_D=\{S\;|\;S\subseteq Q_N \;and \;S\cap F_N \ne \phi\}$。*注：显然 $F_D$有可能不仅有一个元素。*
+>   则 $F_D=\{S\;\|\;S\subseteq Q_N \;and \;S\cap F_N \ne \phi\}$。*注：显然 $F_D$有可能不仅有一个元素。*
 
 例：用上一节 (2) 中 $L_{x01}$ 的例子来看，NFA已经构造好了，用已有的NFA构造DFA如下：
 
@@ -205,7 +205,7 @@ $\delta(q1,\, 0)=\phi$ 表明NFA不接受这个输入，NFA可以简化这种记
 
 - ε-NFA：$\hat\delta(q,\, w)=\bigcup\limits_{i=1}^m E(r_i)$
 
-**定义**：若 $A = (Q, Σ, δ, q_0, F )$  是一个 ε-NFA，则 D 接受的语言为  $L(A) = \{w\; |\; \hatδ(q_0, w) \cap F \ne \phi\,\}$ 。
+**定义**：若 $A = (Q, Σ, δ, q_0, F )$  是一个 ε-NFA，则 D 接受的语言为  $L(A) = \{w\; \|\; \hatδ(q_0, w) \cap F \ne \phi\,\}$ 。
 
 > 其实和NFA接受的语言是一样的
 

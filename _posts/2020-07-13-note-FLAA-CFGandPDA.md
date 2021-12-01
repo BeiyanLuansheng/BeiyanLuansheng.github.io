@@ -25,7 +25,7 @@ mermaid: true
 
 - **最右派生**：每次选取派生式的最右变元派生替换。
 
-> 例如：$L=\{a^{2n}b^m | n \ge 0, m \ge 0 \}$ 的产生式为：$S\rightarrow AB,\, A\rightarrow \varepsilon | aaA,\, B\rightarrow \varepsilon | Bb$
+> 例如：$L=\\{a^{2n}b^m \| n \ge 0, m \ge 0 \\}$ 的产生式为：$S\rightarrow AB,\, A\rightarrow \varepsilon \| aaA,\, B\rightarrow \varepsilon \| Bb$
 >
 > 对于字符串 $w=aabb$ 来说，派生式如下：
 >
@@ -35,23 +35,23 @@ mermaid: true
 >
 > - 最右派生：$S\Rightarrow AB\Rightarrow ABb\Rightarrow ABbb\Rightarrow Abb\Rightarrow aaAbb\Rightarrow aabb$
 
-**上下文无关语言 (CFL)**：$G=(V,T,S,P)$ 是一个CFG，则 $L(G)=\{w\;|\;w\in T^*\; and\; S \stackrel{*}{\Longrightarrow} w\}$
+**上下文无关语言 (CFL)**：$G=(V,T,S,P)$ 是一个CFG，则 $L(G)=\\{w\;\|\;w\in T^* \; and\; S \stackrel{*} {\Longrightarrow} w\\}$
 
 ### 2. 语法分析树
 
 **语法分析树**：$G=(V,T,S,P)$ 是一个CFG，一个G的语法分析树如下：
 
 - 每个内节点都标了一个 $V$ 中的变元；
-- 每个叶节点都标了一个 $T\cup \{\varepsilon\}$ 中的符号，所有被 ε 标记的叶节点都是其父节点的唯一子节点；
+- 每个叶节点都标了一个 $T\cup \\{\varepsilon\\}$ 中的符号，所有被 ε 标记的叶节点都是其父节点的唯一子节点；
 - 如果一个内节点标记为A，它的子节点(从左到右)标记为 $x_1,x_2, …, x_k$，则 $A\rightarrow x_1,x_2, …, x_k \in P$
 
-例：$L=\{ w\; |\; w\in \{0,1\}^*\; and\; w = w^R \}$ 产生式为 $S \rightarrow \varepsilon\, |\, 0\, |\, 1\, |\, 0S0\, |\, 1S1$ 两个语法分析树如下：
+例：$L=\\{ w\; \|\; w\in \\{0,1\\}^*\; and\; w = w^R \\}$ 产生式为 $S \rightarrow \varepsilon\, \|\, 0\, \|\, 1\, \|\, 0S0\, \|\, 1S1$ 两个语法分析树如下：
 
 ![image-20200703222213618](/flaa/image-20200703222213618.png)
 
 ### 3. 二义性
 
-对于一个CFG：$G=(\{E,I\}, \{a, b, (, ), +, *\}, E, P)$，产生式为 $E\rightarrow I\; |\; E+E |\;E*E\;|\;(E)$，$ I\rightarrow a\;|\;b$
+对于一个CFG：$G=(\\{E,I\\}, \\{a, b, (, ), +, *\\}, E, P)$，产生式为 $E\rightarrow I\; \|\; E+E \|\;E*E\;\|\;(E)$，$ I\rightarrow a\;\|\;b$
 
 对于字符串 $w=a+a*a$ 的两种最左派生如下：
 
@@ -64,9 +64,9 @@ E\Rightarrow E+E\Rightarrow I+E\Rightarrow a+E\Rightarrow a+E*E\Rightarrow a+a*a
 
 重新构造产生式以消除歧义：
 
-先算乘法的：$E\rightarrow I\; |\; E+E\; |\; E*E\; |\; (E),\; I\rightarrow a\; |\; b$
+先算乘法的：$E\rightarrow I\; \|\; E+E\; \|\; E*E\; \|\; (E),\; I\rightarrow a\; \|\; b$
 
-先算加法的：$E\rightarrow T\; |\; E+T,\; T\rightarrow F\; |\; T*F,\; F\rightarrow I\; |\;(E),\; I\rightarrow a\;|\;b\;|\;Ia\;|\;Ib$
+先算加法的：$E\rightarrow T\; \|\; E+T,\; T\rightarrow F\; \|\; T*F,\; F\rightarrow I\; \|\;(E),\; I\rightarrow a\;\|\;b\;\|\;Ia\;\|\;Ib$
 
 > 定义同样的语言可以有多个文法，如果一个CFL的所有文法都是歧义的，那么它是固有二义性的
 
@@ -93,7 +93,7 @@ CFG可以转换为CNF的形式，如下例子。
 
 ## 2. 下推自动机(PDA)
 
-> 由于FA有局限性，可以识别$M=\{0^n1^m | n \ge 0, m \ge 0 \}$，但不能识别$L=\{ 0^n1^n | n \ge 0 \}$，所以有了PDA
+> 由于FA有局限性，可以识别$M=\\{0^n1^m \| n \ge 0, m \ge 0 \\}$，但不能识别$L=\\{ 0^n1^n \| n \ge 0 \\}$，所以有了PDA
 
 ### 1. 形式化定义
 
@@ -102,12 +102,12 @@ CFG可以转换为CNF的形式，如下例子。
 - $Q$ 是有限的状态集；
 - $\Sigma$ 是有限的输入字符集；
 - $\Gamma$ 是有限的栈字符集；
-- $\delta$ 是状态转移函数，是一个映射 $Q\times (\Sigma\cup\{\varepsilon\})\times \Gamma \Rightarrow 2^Q\times \Gamma^*$；
+- $\delta$ 是状态转移函数，是一个映射 $Q\times (\Sigma\cup\\{\varepsilon\\})\times \Gamma \Rightarrow 2^Q\times \Gamma^*$；
 - $q_0$ 是初始状态；
 - $z_0$ 是初始栈符，表示栈是空的；
 - $F$ 是终结状态集；
 
-**例**：构造PDA识别 $L=\{ww^R|w\in\{0,1\}^*\}$
+**例**：构造PDA识别 $L=\\{ww^R\|w\in\\{0,1\\}^*\\}$
 
 **解**：第一步，把 $w$ 入栈
 $$
@@ -130,10 +130,10 @@ $$
 
 如果一个PDA $P=(Q,\,\Sigma,\,\Gamma,\,\delta,\,q_0,\,z_0,\,F)$ 是确定的，那么它满足下面的条件：
 
-- $\forall q\in Q,\forall a\in \Sigma \cup \{\varepsilon\},\forall X\in \Gamma$，$\delta(q,a,X)$ 的结果是唯一的；
+- $\forall q\in Q,\forall a\in \Sigma \cup \\{\varepsilon\\},\forall X\in \Gamma$，$\delta(q,a,X)$ 的结果是唯一的；
 - $\delta(q,a,X)$ 和 $\delta(q,\varepsilon ,X)$ 只能有一个有定义，因为对于状态$q$来说，读 $\varepsilon$ 意味着不读 $a$，而另一个意味着读 $a$，所以读与不读就产生了不确定性。
 
-**例**：构造确定的PDA识别 $L = \{ 0^n1^n | n > 0 \}$
+**例**：构造确定的PDA识别 $L = \\{ 0^n1^n \| n > 0 \\}$
 
 **解**：这就是一个DPDA
 
@@ -147,7 +147,7 @@ $$
 - $w$ 是剩余的待读入字符串；
 - $\alpha$ 是栈中的字符串。
 
-**例**：用格局序列描述2中构造的 $L = \{ 0^n1^n | n > 0 \}$ 的PDA接受 $w=0011$ 的过程。
+**例**：用格局序列描述2中构造的 $L = \\{ 0^n1^n \| n > 0 \\}$ 的PDA接受 $w=0011$ 的过程。
 
 **解**：$(q,0011,z_0)┝(q,011,0z_0)┝(q,11,00z_0)┝(p,1,0z_0)┝(p,\varepsilon,z_0)┝(r,\varepsilon,z_0)$
 
@@ -157,11 +157,11 @@ $$
 
 能够由PDA接受(CFG构造)的语言称为**上下文无关语言(CFL)**，PDA可以用两种方式描述接受语言：
 
-- 用**终结状态**来描述：$L(P) = \{w\,|\, (q_0, w, z_0)┝^* (q, \varepsilon, \alpha), q\in F\}$
-- 用**空栈状态**来描述：$N(P) = \{w\,|\, (q_0, w, z_0)┝^* (q, \varepsilon, \alpha)\}$
+- 用**终结状态**来描述：$L(P) = \\{w\,\|\, (q_0, w, z_0)┝^* (q, \varepsilon, \alpha), q\in F\\}$
+- 用**空栈状态**来描述：$N(P) = \\{w\,\|\, (q_0, w, z_0)┝^* (q, \varepsilon, \alpha)\\}$
 - 这两种描述方式是**等价**的，即 $L(P) \Leftrightarrow N(p)$
 
-例如2中构造的 $L = \{ 0^n1^n | n > 0 \}$ 的PDA就是用终结状态接受的，也可用空栈状态来描述，如下
+例如2中构造的 $L = \\{ 0^n1^n \| n > 0 \\}$ 的PDA就是用终结状态接受的，也可用空栈状态来描述，如下
 
 ![image-20200713115835687](/flaa/image-20200713115835687.png)
 
@@ -179,18 +179,18 @@ $$
 
 ### 1. CFG $\Rightarrow$ PDA
 
-把CFG $G=(V,T,S,P)$ 转化为PDA，则对应的PDA为 $B=(\{q\},T,V\cup T,\delta,q,S,\{\,\})$，其中，
+把CFG $G=(V,T,S,P)$ 转化为PDA，则对应的PDA为 $B=(\\{q\\},T,V\cup T,\delta,q,S,\\{\,\\})$，其中，
 
-- $\delta(q, \varepsilon, A) =\{(q, \alpha ) | A\rightarrow \alpha \in P \}$
+- $\delta(q, \varepsilon, A) =\\{(q, \alpha ) \| A\rightarrow \alpha \in P \\}$
 - $\delta(q, a, a) =(q, \varepsilon)$
 
-**例**：将CFG $G=(\{S\},\{0,1\}, \{S\rightarrow 0S1, S\rightarrow SS, S\rightarrow \varepsilon \}, S)$ 转化为PDA。
+**例**：将CFG $G=(\\{S\\},\\{0,1\\}, \\{S\rightarrow 0S1, S\rightarrow SS, S\rightarrow \varepsilon \\}, S)$ 转化为PDA。
 
-**解**：PDA为 $P=(\{q\}, \{0,1\}, \{0,1,S\}, \delta, q, S, \{\,\})$，其中 $\delta$ 定义如下：
+**解**：PDA为 $P=(\\{q\\}, \\{0,1\\}, \\{0,1,S\\}, \delta, q, S, \\{\,\\})$，其中 $\delta$ 定义如下：
 
-- $\delta(q,\varepsilon, S)=\{(q,0S1), (q,SS), (q,\varepsilon)\}$
-- $\delta (q,0,0)=\{(q,\varepsilon )\}$
-- $\delta (q,1,1)=\{(q,\varepsilon )\}$
+- $\delta(q,\varepsilon, S)=\\{(q,0S1), (q,SS), (q,\varepsilon)\\}$
+- $\delta (q,0,0)=\\{(q,\varepsilon )\\}$
+- $\delta (q,1,1)=\\{(q,\varepsilon )\\}$
 
 用图表示
 
@@ -219,16 +219,16 @@ $(q,0011,S)┝(q,0011,0S1)┝(q,011,S1)┝(q,011,0S11)
 
 ![image-20200713113222517](/flaa/image-20200713113222517.png)
 
-**解**：$P=(Q,\,\Sigma,\,\Gamma,\,\delta,\,q_0,\,z_0,\,F)\Rightarrow G=(V,\Sigma,S,R)$，其中 $V=\{S,[qz_0q], [qz_0p], [q0q], [q0p], [q1q], [q1p],[pz_0q], [pz_0p], [p0q], [p0p], [p1q], [p1p] \}$
+**解**：$P=(Q,\,\Sigma,\,\Gamma,\,\delta,\,q_0,\,z_0,\,F)\Rightarrow G=(V,\Sigma,S,R)$，其中 $V=\\{S,[qz_0q], [qz_0p], [q0q], [q0p], [q1q], [q1p],[pz_0q], [pz_0p], [p0q], [p0p], [p1q], [p1p] \\}$
 
 然后根据转移函数导出产生式 $R$
 
 - $\delta (q, 0, z_0) = (q, 0z_0)\Rightarrow [qz_0r_2]\rightarrow 0[q0r_1][r_1z_0r_2], \forall r_1,r_2\in Q \Rightarrow\\
-  [qz_0q] \rightarrow 0[q0q][qz_0q]\; |\; 0[q0p][pz_0q]\\
-  [qz_0p] \rightarrow 0[q0q][qz_0p]\; |\; 0[q0p][pz_0p]$
+  [qz_0q] \rightarrow 0[q0q][qz_0q]\; \|\; 0[q0p][pz_0q]\\
+  [qz_0p] \rightarrow 0[q0q][qz_0p]\; \|\; 0[q0p][pz_0p]$
 - $\delta (q, 0, 0) = (q, 00)\Rightarrow [q0r_2] \rightarrow 0[q0r_1][r_10r_2], \forall r_1,r_2\in Q \Rightarrow \\
-  [q0q] \rightarrow 0[q0q][q0q]\; |\; 0[q0p][p0q] \\
-  [q0p] \rightarrow 0[q0q][q0p]\; |\; 0[q0p][p0p]$
+  [q0q] \rightarrow 0[q0q][q0q]\; \|\; 0[q0p][p0q] \\
+  [q0p] \rightarrow 0[q0q][q0p]\; \|\; 0[q0p][p0p]$
 - $\delta(q, \varepsilon, z_0)=(p,z_0) \Rightarrow [qz_0r_1] \rightarrow [pz_0r_1], \forall r_1\in Q \Rightarrow \\
   [qz_0q] \rightarrow [pz_0q]\\
   [qz_0p] \rightarrow [pz_0p]$
@@ -238,13 +238,13 @@ $(q,0011,S)┝(q,0011,0S1)┝(q,011,S1)┝(q,011,0S11)
 
 把得到的产生式整合在一起得到 $R$
 $$
-R = \{\quad S \rightarrow [qz_0q]\,\, |\,\, [qz_0p],\\
-[qz_0q] \rightarrow 0[q0q][qz_0q] \,\,|\,\, 0[q0p][pz_0q],\\
-[qz_0p] \rightarrow 0[q0q][qz_0p] \,\,|\,\, 0[q0p][pz_0p],\\
-[q0q] \rightarrow 0[q0q][q0q] \,\,|\,\, 0[q0p][p0q],\\
-[q0p] \rightarrow 0[q0q][q0p] \,\,|\,\, 0[q0p][p0p],\\
+R = \\{\quad S \rightarrow [qz_0q]\,\, \|\,\, [qz_0p],\\
+[qz_0q] \rightarrow 0[q0q][qz_0q] \,\,\|\,\, 0[q0p][pz_0q],\\
+[qz_0p] \rightarrow 0[q0q][qz_0p] \,\,\|\,\, 0[q0p][pz_0p],\\
+[q0q] \rightarrow 0[q0q][q0q] \,\,\|\,\, 0[q0p][p0q],\\
+[q0p] \rightarrow 0[q0q][q0p] \,\,\|\,\, 0[q0p][p0p],\\
 [qz_0q] \rightarrow [pz_0q]，\;[qz_0p] \rightarrow[pz_0p],\\
-[q0p] \rightarrow 1,\; [p0p] \rightarrow 1,\; [pz_0p] \rightarrow \varepsilon \quad\}
+[q0p] \rightarrow 1,\; [p0p] \rightarrow 1,\; [pz_0p] \rightarrow \varepsilon \quad\\}
 $$
 最后**把 $R$ 按如下规则化简**一下：
 
@@ -254,15 +254,15 @@ $$
 
 最终得到
 $$
-R = \{\quad S \rightarrow [qz_0p],\;[qz_0p] \rightarrow 0[q0p][pz_0p],\\
+R = \\{\quad S \rightarrow [qz_0p],\;[qz_0p] \rightarrow 0[q0p][pz_0p],\\
 [q0p] \rightarrow 0[q0p][p0p],\; [qz_0p] \rightarrow[pz_0p],\\
-[q0p] \rightarrow 1,\; [p0p] \rightarrow 1,\; [pz_0p] \rightarrow \varepsilon \quad\}
+[q0p] \rightarrow 1,\; [p0p] \rightarrow 1,\; [pz_0p] \rightarrow \varepsilon \quad\\}
 $$
 看起来不太方便，于是令$A=[qz_0p], B=[q0p], C=[p0p], D=[pz_0p]$，得到
 
-$R = \{ S \rightarrow A,\; A\rightarrow 0BD|D,\; B\rightarrow1|0BC,\; C\rightarrow1,\; D\rightarrow \varepsilon \}$
+$R = \\{ S \rightarrow A,\; A\rightarrow 0BD\|D,\; B\rightarrow1\|0BC,\; C\rightarrow1,\; D\rightarrow \varepsilon \\}$
 
-再次化简得到：$R = \{ S\rightarrow 0B|\varepsilon,\; B\rightarrow 1| 0BC,\; C\rightarrow1 \}$
+再次化简得到：$R = \\{ S\rightarrow 0B\|\varepsilon,\; B\rightarrow 1\| 0BC,\; C\rightarrow1 \\}$
 
 
 
@@ -270,24 +270,24 @@ $R = \{ S \rightarrow A,\; A\rightarrow 0BD|D,\; B\rightarrow1|0BC,\; C\rightarr
 
 ### 1. 泵引理
 
-**上下文无关语言的泵引理**：$L$ 是一个CFL，则 $\exist n$，对 $\forall w\in L$，若 $|w|\ge n$，则 $w$ 可以划分为 $w=uvxyz$，其中
+**上下文无关语言的泵引理**：$L$ 是一个CFL，则 $\exist n$，对 $\forall w\in L$，若 $\|w\|\ge n$，则 $w$ 可以划分为 $w=uvxyz$，其中
 
-- $|vxy| \le n$
-- $|vy| \ge 1$，(要是vy同时为空就出现 $A\rightarrow A$ 这种没有意义的产生式了)
+- $\|vxy\| \le n$
+- $\|vy\| \ge 1$，(要是vy同时为空就出现 $A\rightarrow A$ 这种没有意义的产生式了)
 
 - $uv^ixy^iz\in L,\;\,\forall i=0,1,2,...$
 
-> n的取法：令 $m=|V|$，$k=max\{ |\alpha| \forall A\rightarrow \alpha \}$，则 $n=k^m$
+> n的取法：令 $m=\|V\|$，$k=max\\{ \|\alpha\| \forall A\rightarrow \alpha \\}$，则 $n=k^m$
 
 派生过程：$S\stackrel*\Rightarrow uAz \stackrel*\Rightarrow uvAyz\stackrel*\Rightarrow w$，语法解析树如下，对于重复出现的 A 来说，则可用子树的A代替父节点，此时失去的就是一对vy节点。
 
 ![image-20200713201355413](/flaa/image-20200713201355413.png)
 
-**例**：证明 $L=\{ww|w\in \{0,1\}^*\}$ 不是CFL。
+**例**：证明 $L=\\{ww\|w\in \\{0,1\\}^*\\}$ 不是CFL。
 
-**解**：假设L是CFL。则由泵引理可知，存在一个常数n，对于L中长度不小于n的字符串w就可以划分为五个部分，$w=uvxyz$，其中 $|vxy| \le n$，$vy \ne \varepsilon$，$uv^kxy^kz\in L$。
+**解**：假设L是CFL。则由泵引理可知，存在一个常数n，对于L中长度不小于n的字符串w就可以划分为五个部分，$w=uvxyz$，其中 $\|vxy\| \le n$，$vy \ne \varepsilon$，$uv^kxy^kz\in L$。
 
-取 $w=0^n1^n0^n1^n\in L$，则 $uvxyz=0^n1^n0^n1^n$(如果要推出矛盾，就需要推出 $uxz\notin L$)。v和y不能同时为空串且 $|vxy| \le n$，所以它们的取值情况可以分为7种情况，这七种情况又可以分为两类：
+取 $w=0^n1^n0^n1^n\in L$，则 $uvxyz=0^n1^n0^n1^n$(如果要推出矛盾，就需要推出 $uxz\notin L$)。v和y不能同时为空串且 $\|vxy\| \le n$，所以它们的取值情况可以分为7种情况，这七种情况又可以分为两类：
 
 - 第一类：vxy在同一类字符里，即同在开始的n个0、同时在开始的n个1里、同时在结束的n个0里，同时在结束的n个1里。这四种情况是等价的，而显然在第一种情况下有 $uxz\notin L$，因为开始的0的个数不足n了。
 - 第二类：vxy在连续的两类字符里，即在前半部分的 $0^n1^n$ 中、在中间的 $1^n0^n$ 中、在后半部分的 $0^n1^n$中。这三种情况是等价的，而显然在第一种情况下有 $uxz\notin L$，因为开始的0和1的个数都不足n了。
@@ -300,11 +300,11 @@ CFL在**并、连接、星、反转、交、同态、逆同态**运算下是封�
 
 > 对于两个CFL $L_1$ 和 $L_2$，令 $G(L_1)=(V_1,T_1,R_1,S_1), G(L_2)=(V_2,T_2,R_2,S_2)$
 >
-> - 并：$G(L_1 \cup L_2 ) = (V_1\cup V_2\cup \{S\},T_1\cup T_2, R,S)$，$R= \{S\rightarrow S_1 | S_2\} \cup R_1\cup R_2$
-> - 连接：$G(L_1 \cup L_2 ) = (V_1\cup V_2\cup \{S\},T_1\cup T_2, R,S)$，$R= \{S\rightarrow S_1 S_2\} \cup R_1\cup R_2$
-> - 星：$G(L_1^*) = (V_1,T_1, \{S_1\rightarrow S_1S_1|\varepsilon\}\cup R_1,S_1)$
-> - 反转：$G(L_1^R)=(V_1,T_1, \{A\rightarrow \alpha^R|A\rightarrow \alpha R_1\},S_1)$
+> - 并：$G(L_1 \cup L_2 ) = (V_1\cup V_2\cup \\{S\\},T_1\cup T_2, R,S)$，$R= \\{S\rightarrow S_1 \| S_2\\} \cup R_1\cup R_2$
+> - 连接：$G(L_1 \cup L_2 ) = (V_1\cup V_2\cup \\{S\\},T_1\cup T_2, R,S)$，$R= \\{S\rightarrow S_1 S_2\\} \cup R_1\cup R_2$
+> - 星：$G(L_1^*) = (V_1,T_1, \\{S_1\rightarrow S_1S_1\|\varepsilon\\}\cup R_1,S_1)$
+> - 反转：$G(L_1^R)=(V_1,T_1, \\{A\rightarrow \alpha^R\|A\rightarrow \alpha R_1\\},S_1)$
 
-交运算不封闭，例如：$L_1 =\{a^nb^nc^m | n\ge 0, m\ge 0\},\;L_2 =\{a^nb^mc^m | n\ge 0, m\ge 0\}$ 是两个CFL，它们的交就是 $L_1 \cup L_2 =\{ a^nb^nc^n | n\ge 0\}$，这不是CFL，可以按照上面的方式用泵引理证明。
+交运算不封闭，例如：$L_1 =\\{a^nb^nc^m \| n\ge 0, m\ge 0\\},\;L_2 =\\{a^nb^mc^m \| n\ge 0, m\ge 0\\}$ 是两个CFL，它们的交就是 $L_1 \cup L_2 =\\{ a^nb^nc^n \| n\ge 0\\}$，这不是CFL，可以按照上面的方式用泵引理证明。
 
 > 但是一个CFL和一个RL做交运算之后得到的还是CFL，这个条件下它是封闭的。
