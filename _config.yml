@@ -79,10 +79,10 @@ theme_mode:   # [light|dark]
 # will be added to all image (site avatar & posts' images) paths starting with '/'
 #
 # e.g. 'https://cdn.com'
-img_cdn: 'https://pic.imgdb.cn/item'
+img_cdn: 'https://raw.githubusercontent.com/BeiyanLuansheng/BeiyanLuansheng.github.io/main/pics'
 
 # the avatar on sidebar, support local or CORS resources
-avatar: '/5fcdd5133ffa7d37b3ae6186.jpg'
+avatar: '/avatar.png'
 
 # boolean type, the global switch for ToC in posts.
 toc: true
@@ -155,6 +155,7 @@ exclude:
   - '*.gemspec'
   - tools
   - docs
+  - pics
   - README.md
   - LICENSE
   - gulpfile.js
