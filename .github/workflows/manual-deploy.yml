@@ -1,7 +1,7 @@
 name: 'Manual build'
 on:
   workflow_dispatch:
-      branches:
+    branches:
       - main
     paths-ignore:
       - .gitignore
