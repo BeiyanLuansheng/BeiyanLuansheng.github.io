@@ -1,6 +1,6 @@
 name: 'Automatic build'
 on:
-  push:
+  [push, workflow_dispatch]:
     branches:
       - main
     paths-ignore:
