@@ -1,4 +1,4 @@
-name: 'Automatic build'
+name: 'Autobuild pages'
 on:
   push:
     branches:
