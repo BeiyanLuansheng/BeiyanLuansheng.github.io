@@ -7,13 +7,6 @@ on:
       - .gitignore
       - README.md
       - LICENSE
-  workflow_dispatch:
-      branches:
-      - main
-    paths-ignore:
-      - .gitignore
-      - README.md
-      - LICENSE
 
 jobs:
   continuous-delivery:
