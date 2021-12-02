@@ -10,6 +10,8 @@ mermaid: true
 
 ## 1 整合 Mybatis
 
+MyBatis-Spring-Boot-Starter 官方文档 [http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/#](http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/#)
+
 ### 1.1 引入依赖
 
 ```xml
@@ -226,6 +228,8 @@ public class CourseServiceImpl implements CourseService {
 再写一个 Controller 调用这个 service 就可以启动项目来测试啦
 
 ## 2 整合 Druid
+
+Druid 官方文档 [https://github.com/alibaba/druid/wiki](https://github.com/alibaba/druid/wiki)
 
 ### 2.1 引入依赖
 
