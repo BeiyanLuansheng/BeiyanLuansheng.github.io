@@ -10,6 +10,7 @@ mermaid: true
 
 ## 1 整合 Mybatis
 
+MyBatis-Spring-Boot-Starter 官方文档 [http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/](http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)
 
 ### 1.1 引入依赖
 
