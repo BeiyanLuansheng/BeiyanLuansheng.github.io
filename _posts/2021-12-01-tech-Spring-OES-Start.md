@@ -14,9 +14,6 @@ mermaid: true
 
 项目地址 [https://github.com/BeiyanLuansheng/OES](https://github.com/BeiyanLuansheng/OES)
 
-官方手册 [Spring Guides](https://spring.io/guides)
-
-官方Demo [Spring Projects](https://spring.io/projects)
 
 ## 项目初始
 
