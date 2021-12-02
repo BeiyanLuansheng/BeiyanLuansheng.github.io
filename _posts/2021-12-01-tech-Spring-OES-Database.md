@@ -228,7 +228,7 @@ public class CourseServiceImpl implements CourseService {
 
 ## 2 整合 Druid
 
-
+Druid官方文档 [https://github.com/alibaba/druid/wiki](https://github.com/alibaba/druid/wiki)
 
 ### 2.1 引入依赖
 
