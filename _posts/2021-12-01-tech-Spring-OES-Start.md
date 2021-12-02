@@ -28,7 +28,7 @@ mermaid: true
    |     ├── src [源文件]
    |     |    ├── main [工程主文件]
    |     |    |    ├── java [代码]
-   |     |    |    |    └── cn.edu.hit.oes.start
+   |     |    |    |    └── org.oes.start
    |     |    |    |         └── Application.java [启动类]
    |     |    |    └── resources [资源文件]
    |     |    └── test [测试文件]
@@ -46,7 +46,7 @@ mermaid: true
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.edu.hit</groupId>
+    <groupId>org</groupId>
     <artifactId>OES</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
@@ -59,8 +59,8 @@ mermaid: true
     </modules>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 </project>
 ```
@@ -140,7 +140,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan("cn.edu.hit.oes")
+@ComponentScan("org.oes")
 @SpringBootApplication
 public class Application {
 
@@ -150,14 +150,14 @@ public class Application {
 }
 ```
 
-**注意** `@SpringBootApplication` 注解仅会扫描当前包（即cn.edu.hit.oes.start）下的所有 `@Service` 等注解
+**注意** `@SpringBootApplication` 注解仅会扫描当前包（即org.oes.start）下的所有 `@Service` 等注解
 
 为保证你写在 oes-biz 模块中的 `@Service` 或 `@Component` 也能被扫描到，需要手动添加注解 `@ComponentScan`，后面写上你要扫描的包路径，如果需要扫描多个包，写成 `@ComponentScan({"cn.a.b", "com.c.d"})` 的形式
 
 之后你可以在 oes-start 模块中写一个简单的 Controller，如
 
 ```java
-package cn.edu.hit.oes.start.controller;
+package org.oes.start.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

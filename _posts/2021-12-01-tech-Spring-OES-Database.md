@@ -49,7 +49,7 @@ mermaid: true
 ```yml
 # mybatis映射文件路径配置
 mybatis:
-  type-aliases-package: cn.edu.hit.oes.biz.entity
+  type-aliases-package: org.oes.biz.entity
   mapper-locations: classpath:mapper/*.xml
 
 # 如果你不想使用下一节中的Druid，需要添加以下数据源配置，否则不需要
@@ -66,18 +66,18 @@ spring:
 
 `mapper-locations` 是 Mapper.xml 文件的路径，这些文件要放在 oes-biz 的 resources/mapper 目录下
 
-还有 Mapper.java 没有扫描到，这些将会被放在 oes-biz 模块下（/oes-biz/src/main/java/cn/edu/hit/oes/biz/mapper）
+还有 Mapper.java 没有扫描到，这些将会被放在 oes-biz 模块下（/oes-biz/src/main/java/org/oes/biz/mapper）
 所以添加 `@MapperScan` 注解，指定包名
 
 ```java
 import org.mybatis.spring.annotation.MapperScan;
 
-@MapperScan("cn.edu.hit.oes.biz.mapper")
-@ComponentScan("cn.edu.hit.oes")
+@MapperScan("org.oes.biz.mapper")
+@ComponentScan("org.oes")
 @SpringBootApplication
 public class Application { ... }
 ```
-{: file='/oes-start/src/main/java/cn/edu/hit/oes/start/Application.java'}
+{: file='/oes-start/src/main/java/org/oes/start/Application.java'}
 
 ### 1.3 代码
 
@@ -86,7 +86,7 @@ public class Application { ... }
 建好数据库表，建好与数据库表一致的实体类，如
 
 ```java
-package cn.edu.hit.oes.biz.entity;
+package org.oes.biz.entity;
 
 import java.util.Date;
 
@@ -141,9 +141,9 @@ public class Course {
 写一个 Mapper
 
 ```java
-package cn.edu.hit.oes.biz.mapper;
+package org.oes.biz.mapper;
 
-import cn.edu.hit.oes.biz.entity.Course;
+import org.oes.biz.entity.Course;
 import org.apache.ibatis.annotations.Param;
 
 public interface CourseMapper {
@@ -156,8 +156,8 @@ public interface CourseMapper {
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.edu.hit.oes.biz.mapper.CourseMapper" >
-    <resultMap id="BaseResultMap" type="cn.edu.hit.oes.biz.entity.Course" >
+<mapper namespace="org.oes.biz.mapper.CourseMapper" >
+    <resultMap id="BaseResultMap" type="org.oes.biz.entity.Course" >
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="gmt_create" property="gmtCreate" jdbcType="DATE" />
         <result column="gmt_modified" property="gmtModified" jdbcType="DATE" />
@@ -186,14 +186,14 @@ public interface CourseMapper {
 ```
 {: file='oes-biz/src/main/resources/mapper/CourseMapper.xml'}
 
-> 关于 MySQL Type、jdbcType、Java Type 的对应关系请移步
+> 关于 MySQL Type、jdbcType、Java Type 的对应关系请移步 [MySQL、jdbcType、Java Type之间的映射关系]()
 
 写一个 service 调用这个 Mapper
 
 ```java
-package cn.edu.hit.oes.biz.service;
+package org.oes.biz.service;
 
-import cn.edu.hit.oes.biz.entity.Course;
+import org.oes.biz.entity.Course;
 
 public interface CourseService {
 
@@ -202,11 +202,11 @@ public interface CourseService {
 ```
 
 ```java
-package cn.edu.hit.oes.biz.service.impl;
+package org.oes.biz.service.impl;
 
-import cn.edu.hit.oes.biz.entity.Course;
-import cn.edu.hit.oes.biz.mapper.CourseMapper;
-import cn.edu.hit.oes.biz.service.CourseService;
+import org.oes.biz.entity.Course;
+import org.oes.biz.mapper.CourseMapper;
+import org.oes.biz.service.CourseService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -273,7 +273,7 @@ spring:
       test-on-return: true
       # 监控配置
       filters: stat,wall # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-      aop-patterns: cn.edu.hit.oes.biz.service.*      #Spring监控配置，说明请参考Druid Github Wiki，配置_Druid和Spring关联监控配置
+      aop-patterns: org.oes.biz.service.*      #Spring监控配置，说明请参考Druid Github Wiki，配置_Druid和Spring关联监控配置
       web-stat-filter:      # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
         enabled: true
         url-pattern: /*

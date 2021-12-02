@@ -1,0 +1,299 @@
+---
+title: OES之三：日志
+author: BeiyanLuansheng
+date: 2021-12-02 16:40:43 +0800
+categories: [技术积累, Spring-OES]
+tags: [Spring, logback, slf4j]
+math: true
+mermaid: true
+---
+
+## 1 引包
+
+这里采用了 logback-classic 方案，据资料说 logback 性能要比 log4j 好
+
+> 因为定义 slf4j 日志标准的和 logback 的开发者是同一个人，所以在定义和实现之间相比其他实现少了一个适配层
+
+而 logback 依赖 slf4j 等包，所以 logback-classic 实际上是整合了所有需要的包，方便使用
+
+> 官方手册 [http://logback.qos.ch/manual/index.html](http://logback.qos.ch/manual/index.html)
+
+```xml
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.7</version>
+</dependency>
+```
+{: file='/pom.xml'}
+
+**注**：SpringBoot 已经集成了这个日志框架，所以 SpringBoot 项目可以直接跳过引包 
+
+spring-boot-starter其中包含了 spring-boot-starter-logging
+
+![image-20211202202755580](/oes/image-20211202202755580.png)
+
+## 2 配置
+
+### 2.1 基础配置
+
+这是一个基础的配置文件，里面没有任何内容，后续的所有配置都将在 `<configuration>` 标签下
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+</configuration>
+```
+{: file='logback.xml'}
+
+标签里的属性是可选的，没有特殊要求可以不用配置
+
+- `scan`: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为 `true` 。
+
+- `scanPeriod`: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当 `scan` 为 `true` 时，此属性生效。默认的时间间隔为1分钟。
+
+- `debug`: 当此属性设置为 `true` 时，将打印出 logback 内部日志信息，实时查看 logback 运行状态。默认值为 `false` 。
+
+### 2.2 property 标签
+
+property 标签用于定义一些在配置文件中会使用到的常量，比如日志目录
+
+```xml
+<configuration>
+    <property name="LOG_HOME" value="./logs" />
+</configuration>
+```
+
+### 2.3 appender 标签
+
+负责写日志的核心组件，定义了日志的输出位置、格式等问题，它有两个必要属性 `name` 和 `class` 。`name` 指定 `appender` 名称，`class` 指定 `appender` 的全限定名。日志输出位置，有 ConsoleAppender, FileAppender, SMTPAppender, DBAppender, AsyncAppender 等。
+
+#### ConsoleAppender
+
+把日志输出到控制台，有以下子标签：
+
+- `encoder`：对日志进行格式化。属性 `class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"`。有子标签 `pattern` 格式问题见下文
+
+- `target`：字符串 System.out(默认) 或 System.err
+
+#### FileAppender
+
+把日志输出到文件，有以下子标签：
+
+- `file`：被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值
+
+- `append`：如果是 `true`，日志被追加到文件结尾，如果是 `false`，清空现存文件，默认是 `true`
+
+- `encoder`：同 `ConsoleAppender`
+
+- `prudent`：如果是 `true`，日志会被安全的写入文件，即使其他的 FileAppender 也在向此文件做写入操作，效率低，默认是 `false`
+
+#### RollingFileAppender
+
+滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件。有以下子标签：
+
+- `file`, `append`, `encoder`：同 `FileAppender`
+
+- `prudent`：当为true时，不支持 FixedWindowRollingPolicy 支持 TimeBasedRollingPolicy，但是有两个限制——不支持也不允许文件压缩；不能设置file 标签，必须留空。
+
+- `rollingPolicy`：当发生滚动时，决定RollingFileAppender的行为，涉及文件移动和重命名。属性class定义具体的滚动策略类：
+  
+    -  `class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"` 是最常用的滚动策略，根据时间来制定滚动策略，既负责滚动也负责触发滚动。有以下子标签：
+
+        - `fileNamePattern`：必要标签，包含文件名及 `%d` 转换符，`%d` 可以包含一个 `java.text.SimpleDateFormat` 指定的时间格式，如：`%d{yyyy-MM-dd}`。如果直接使用 `%d`，默认格式是 `yyyy-MM-dd`。RollingFileAppender 的 `file` 子标签可有可无，通过设置 `file`，可以为活动文件和归档文件指定不同位置，当前日志总是记录到 `file` 指定的文件（活动文件），活动文件名不会改变；如果没设置file，活动文件名会根据fileNamePattern 的值，每隔一段时间改变一次。`/` 或者 `\` 会被当做目录分隔符。
+
+        - `maxHistory`：可选标签，控制保留的归档文件的最大数量，超出数量就删除旧文件。假设设置每天滚动且 `maxHistory` 是3，则只保存最近3天的文件，删除之前的旧文件。注意，删除旧文件是，那些为了归档而创建的目录也会被删除。
+    
+    - `class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"` 是根据固定窗口算法重命名文件的滚动策略，它只负责滚动，触发滚动依赖 apper 下的另一个子标签 `triggeringPolicy`。有以下子标签：
+
+        - `minIndex`：窗口索引最小值
+
+        - `maxIndex`：窗口索引最大值，当用户指定的窗口过大时，会自动将窗口设置为12。
+
+        - `fileNamePattern`：必须包含 `%i` 例如，假设最小值和最大值分别为1和2，命名模式为 `mylog%i.log`，会产生归档文件 `mylog1.log` 和 `mylog2.log`。还可以指定文件压缩选项，例如，`mylog%i.log.gz` 或者 `log%i.log.zip`
+
+- `triggeringPolicy`: 触发 RollingFileAppender 的滚动。策略 `class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"` 会查看当前活动文件的大小，如果超过指定大小会触发滚动。只有一个标签:
+  
+    - `maxFileSize`：活动文件的大小，默认值是10MB。
+
+例：
+
+```xml
+　　　<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+　　　　　　<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"> 
+　　　　　　　　　<fileNamePattern>logFile.log.%d{yyyy-MM-dd}</fileNamePattern> 
+　　　　　　　　　<maxHistory>3</maxHistory> 
+　　　　　　</rollingPolicy> 
+　　　　　　<encoder> 
+　　　　　　　　　<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern> 
+　　　　　　</encoder> 
+　　　</appender> 
+
+　　　<appender name="test" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+　　　　　　<file>test.log</file> 
+　　　　　　<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"> 
+　　　　　　　　　　<fileNamePattern>tests.%i.log.zip</fileNamePattern> 
+　　　　　　　　　　<minIndex>1</minIndex> 
+　　　　　　　　　　<maxIndex>3</maxIndex> 
+　　　　　　</rollingPolicy> 
+　　　　　　<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"> 
+　　　　　　　　　　<maxFileSize>5MB</maxFileSize> 
+　　　　　　</triggeringPolicy> 
+　　　　　　<encoder> 
+　　　　　　　　　<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern> 
+　　　　　　</encoder> 
+　　　</appender> 
+```
+
+#### AsyncAppender
+
+异步添加日志，不单独使用，一般通过引用其它具体的appender来使用。如：
+
+```xml
+<!-- logfile 是一个 FileAppder  -->
+<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="logfile" />
+</appender>
+```
+
+### 2.4 logger 标签
+
+设置某一包或类下的日志打印级别、appender
+
+```xml
+<!--控制指定 Logger 的日志输出（包括等级和输出位置）, additivity 表示日志信息是否向上传递，默认为 true 传递-->
+    <logger name="exampleLogger" level="warn" additivity="false">
+        <!--可多个appender-->
+        <appender-ref ref="FILE" />
+    </logger>
+```
+
+需要说明的是，additivity 属性表示的是这一条日志除了会写到它本身的appender中，是否还会写到上级的 appender 中（即会不会不重复打印）
+
+结合下一节的 root 标签定义举例，additivity 表示一条 exampleLogger 的日志在打到 FILE 中后是否还会打到 STDOUT 中
+
+> 日志级别从低到高 TRACE < DEBUG < INFO < WARN < ERROR < FATAL
+
+### 2.5 root 标签
+
+指定日志级别及输出的appender，与logger标签类似，不过是全局日志输出设置，在 logger 中指定对应属性后可以覆盖此配置
+
+```xml
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+```
+
+### 2.6 pattern 标签：日志格式
+
+定义每行日志记录的格式，官网地址 [https://logback.qos.ch/manual/layouts.html](https://logback.qos.ch/manual/layouts.html)
+
+| 功能                                | 变量名                       | 简写    | 说明                                                         |
+| ----------------------------------- | ---------------------------- | ------- | ------------------------------------------------------------ |
+|                                     | %logger                      | %c或%lo | 当前日志名称，如: Slf4jAndLogbackMain                        |
+|                                     | %class                       | %C      | 日志调用所在类，如: com.dragon.study.log.Slf4jAndLogbackMain |
+|                                     | %method                      | %M      | 日志所在方法，如: main                                       |
+|                                     | %caller                      |         | 日志调用位置，如：at com.dragon.study.log.Slf4jAndLogbackMain.main(Slf4jAndLogbackMain.java:15) |
+|                                     | %thread                      | %t      | 日志调用所有线程序,如：main                                  |
+|                                     | %level                       | %p或%le | 日志级别，如：INFO                                           |
+|                                     | %date                        | %d      | 日期，如: 2018-12-15 21:40:12,890                            |
+|                                     | %msg                         | %m      | 日志记录内容                                                 |
+|                                     | %exception                   | %ex     | 异常记录                                                     |
+| 宽度设置                             | %20logger                    |         | 当字符数少于20个字符时，则左侧留空白                         |
+|                                     | %-20logger                   |         | 当字符数少于20个字符时，则右侧留空白                         |
+|                                     | %.30logger                   |         | 当字符数据大于30个时，则截断                                 |
+| 显示设置                             | %highligth                   |         | 突出显示                                                     |
+|                                     | %green(%red、%blue、%white)  |         | 字体显示为指定颜色                                           |
+|                                     | {length}                     |         | 可指定长度，如%logger{36}                                    |
+| 网络访问设置（依赖logger-access包）   | %remoteIP                    | %a      | 远程ip                                                       |
+|                                     | %localIP                     | %A      | 本地ip                                                       |
+|                                     | %clientHost                  | %h      | 远程主机名                                                   |
+|                                     | %localPort                   |         | 本地端口                                                     |
+|                                     | %requestMethod               | %m      | http请求方法                                                 |
+|                                     | %protocol                    | %H      | http请求协议                                                 |
+|                                     | %statusCode                  | %s      | http请求status code                                          |
+|                                     | %requestURL                  | %r      | http请求地址                                                 |
+|                                     | %requestURI                  | %U      | http请求资源地址                                             |
+|                                     | %queryString                 | %q      | http请求参数                                                 |
+|                                     | %server                      | %v      | 服务器地址                                                   |
+|                                     | %elapsedTime                 | %D      | http请求处理的时间，单位是毫秒                               |
+|                                     | %elapsedSeconds              | %T      | http请求处理的时间，单位是秒                                 |
+|                                     | %date                        | %t      | 日志记录时间                                                 |
+|                                     | %threadName                  | %I      | 处理请求的线程名                                             |
+|                                     | %reqAttribute{attributeName} |         | http请求attribute值                                          |
+|                                     | %reqCookie{cookie}           |         | http请求cookie值                                             |
+|                                     | %reqContent                  |         | http请求体内容                                               |
+|                                     | %fullRequest                 |         | http完整请求                                                 |
+|                                     | %responseContent             |         | http响应                                                     |
+|                                     | %fullResponse                |         | http完整响应                                                 |
+
+### 2.7 配置文件
+
+在 oes-start 的 resource 文件中新建 logback.xml 用于自定义配置，根据以上的说明写一个简单的配置文件
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_HOME" value="./logs" />
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 每天生成日志文件 -->
+    <appender name="oesAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/oes.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <FileNamePattern>${LOG_HOME}/oes.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <!--日志文件保留天数 -->
+            <MaxHistory>2</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="stdout"/>
+    </root>
+
+    <logger name="oesLogger" additivity="false">
+        <appender-ref ref="oesAppender"/>
+    </logger>
+</configuration>
+```
+{: file='logback.xml'}
+
+## 3 使用
+
+写一个简单的测试 Controller，测试效果
+
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@RestController
+public class MainController {
+
+    private static final Logger logger = LoggerFactory.getLogger("oesLogger");
+
+    @GetMapping("/log")
+    public String log() {
+        logger.error("Test logger in MainController");
+        return "log success";
+    }
+}
+```
+
+日志如下
+
+```
+2021-12-02 18:42:22.883 [http-nio-8089-exec-1] ERROR oesLogger - Test logger in MainController
+```
+{: file='/logs/oes.log'}
