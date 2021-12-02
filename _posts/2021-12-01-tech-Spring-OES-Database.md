@@ -10,7 +10,6 @@ mermaid: true
 
 ## 1 整合 Mybatis
 
-MyBatis-Spring-Boot-Starter 官方文档 [http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/#](http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/#)
 
 ### 1.1 引入依赖
 
@@ -229,7 +228,7 @@ public class CourseServiceImpl implements CourseService {
 
 ## 2 整合 Druid
 
-Druid 官方文档 [https://github.com/alibaba/druid/wiki](https://github.com/alibaba/druid/wiki)
+
 
 ### 2.1 引入依赖
 
