@@ -1,0 +1,177 @@
+---
+title: OES之四：打包
+author: BeiyanLuansheng
+date: 2021-12-03 12:08:55 +0800
+categories: [技术积累, Spring-OES]
+tags: [Spring, SpringBoot, maven]
+math: true
+mermaid: true
+---
+
+到目前为止，这个工程可以说是成功建立了，它虽然只有一些基本的数据库操作，但现在你可以在 IDEA 中轻松的运行它
+
+但是，我们想将它在服务器上启动，就必须通过命令行进行打包、启动的操作
+
+在 [OES之一：开始]() 一节中，我们在父模块下新建了四个子模块，现在我们要把整个项目打包，以方便部署
+
+## 父模块
+
+首先是父模块的pom.xml，在这个文件中做了以下设置
+
+- 设置包的基本配置：包名、版本、打包类型。其中，打包类型一定要设置为 pom 方式
+
+- 继承了 org.springframework.boot >> spring-boot-starter-parent >> 2.5.7
+
+- 在你使用 IDE 创建子模块时，IDE一般会自动加入到 modules 中
+
+- 属性 properties，这是一些你定义的常量，方便管理，这里只定义了 maven 编译时使用的 jdk 版本。*等打包之后可以用* `javap -v xxx.class` *命令看一下编译打包时用的 jdk 是不是你设置的版本*
+
+- 依赖项 dependencyManagement 中的内容在下面的例子中被省略了
+
+- 最后是 build 配置，如果使用Spring Initializr 创建这个父工程，默认的是spring-boot-maven-plugin，此处应把它去掉，这个应该只出现在你启动类所在的模块中。在这里只使用 maven 的插件，而 maven-surefire-plugin 这个插件在打包的时候默认会运行单元测试，在此处把它关掉。如果不需要额外的配置，此处 pom 中甚至不要 build 标签设置（亲测可以运行）
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.oes</groupId>
+    <artifactId>OES</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.7</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <modules>
+        <module>oes-biz</module>
+        <module>oes-common</module>
+        <module>oes-gateway</module>
+        <module>oes-start</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <!-- 此处省略了依赖项 -->
+    <dependencyManagement>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>    <!--默认关掉单元测试 -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+## 子模块
+
+子模块的pom与父模块的pom区别不大，只是继承的不再是 spring-boot-starter-parent，而是你的父模块 org.oes >> OES >>1.0.0-SNAPSHOT
+
+另外，如果这个模块是**启动类所在的模块**，就要把下面的 build 部分加上，否则不要加
+
+build 中的 spring-boot-maven-plugin 插件中设置了启动类的路径，打包执行的方式（这些也可以不指定，直接使用默认选项）
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.oes</groupId>
+        <artifactId>OES</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>oes-start</artifactId>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <!-- 此处省略了依赖项 -->
+    <dependencies>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.oes.start.Application</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+{: file='oes-start/pom.xml'}
+
+## 打包
+
+有两种方式打包，如果你在 IDEA 中，可以直接点边栏上的 maven 插件中的选项，建议先点 clean 再点 package
+
+![image-20211203134307081](/oes/image-20211203134307081.png)
+
+如果你在命令行，进入工程的根目录，执行 `mvn clean package` 就会自动先清理再打包了
+
+对于其中一个模块，会看到如下图的输出 (图例为oes-common)
+
+![image-20211203134938048](/oes/image-20211203134938048.png)
+
+最后会得到下图的结果，表明打包成功
+
+![image-20211203135220753](/oes/image-20211203135220753.png)
+
+## 启动
+
+把所有的子模块都打成 jar 包后，进入工程根目录，执行 `java -jar` 命令启动即可
+
+注：其实在哪里启动都可以，只不过如果你的 logback.xml 中使用的是相对路径，那么你的 log 文件的位置会变
+
+![image-20211203135732978](/oes/image-20211203135732978.png)
+
+> 图中输出的图像只需要在 resources 目录下建一个 banner.txt 就可以替换掉啦
+
+## 问题汇总
+
+Maven 打包异常：`Unable to find main class`
+
+> 这个问题应该是由于在父模块的 pom 中加入了 spring-boot-maven-plugin，移动到子模块中就好了
+
+Maven 打包异常：`程序包 xxx 不存在` 其中的程序包是来自其他子模块
+
+> 一般是由于你改了一些文件然后重新打包，但是打包前没有做 clean 导致的，所以强烈建议先 clean 再 package
+
+Maven 打包异常：maven-surefire 运行 test 失败
+
+> 一般是由于你在 test文件夹下写了一些单元测试，但是又不是所有的测试都能通过，所以报错测试失败
+>
+> 要么把失败的测试用例删掉
+> 
+> 要么配置一下跳过测试，参见父模块的 pom 文件设置，也可以在命令行加参数 `-Dmaven.test.skip=true`
