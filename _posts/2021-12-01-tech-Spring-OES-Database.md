@@ -81,6 +81,49 @@ public class Application { ... }
 ```
 {: file='/oes-start/src/main/java/org/oes/start/Application.java'}
 
+为了便于区分不同环境下的配置，我们把 application.yml 进一步拆分，新建三个文件
+
+- application-prod.yml 生产环境配置
+
+- application-dev.yml 开发环境配置
+
+- application-test.yml 测试环境配置
+
+以开发环境为例
+
+```yml
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/oes_db?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+```
+{: file='application-dev.yml'}
+
+然后在 application.yml 中使用这个配置
+
+```yml
+# mybatis映射文件路径配置
+mybatis:
+  type-aliases-package: org.oes.biz.entity
+  mapper-locations: classpath:mapper/*.xml
+
+spring:
+  datasource:
+    active: dev
+```
+{: file='application.yml'}
+
+这样启动的时候就会默认加载 dev 配置，如果想要加载其他配置就可以在命令行中加入参数
+
+生产环境启动 `mvn spring-boot:run -Dspring-boot.run.profiles=prod`
+
+或 `java -jar -Dspring.profiles.active=prod oes-start.jar`
+
+
+> 打包启动参见 [OES之四：打包]()
+
 ### 1.3 代码
 
 现在可以在 oes-biz 中写数据层的代码了

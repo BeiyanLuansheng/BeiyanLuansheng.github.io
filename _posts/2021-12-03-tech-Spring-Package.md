@@ -158,6 +158,28 @@ build 中的 spring-boot-maven-plugin 插件中设置了启动类的路径，打
 
 > 图中输出的图像只需要在 resources 目录下建一个 banner.txt 就可以替换掉啦
 
+### 使用 mvn 启动
+
+也可以通过 spring-boot 的 maven 插件 spring-boot-maven-plugin 方式启动，但是比较繁琐
+
+首先需要在工程根目录下执行 `mvn install` 命令把所有的模块打包（其实只需要打包除启动模块外的模块，所以也可在子模块中挨个执行），安装在本地的 maven 仓库中
+
+然后在 **启动模块的目录下** 执行 `mvn spring-boot:run`，注意，一定要在启动模块的目录下，否则会找不到启动类
+
+![image-20211203153637573](/oes/image-20211203153637573.png)
+
+找不到启动类的解释：如下所示，有一个名为 `classesDirectory` 的配置，默认是下面的值，所以如果在其他地方启动就会找不到这个位置，导致找不到启动类
+
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+    </configuration>
+</plugin>
+```
+
 ## 问题汇总
 
 Maven 打包异常：`Unable to find main class`
