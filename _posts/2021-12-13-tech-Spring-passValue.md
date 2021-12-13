@@ -79,13 +79,15 @@ userName=abcd&password=123456
 3. Content-Type: multipart/form-data; boundary=—-RANDOM_jDMUxq4Ot5 (表单有文件上传时的格式)
 
 
-## 2 @RequestParam 与 @RequestBody
+## 2 @RequestParam 与 @RequestBody 及 @PathVariable
 
 SpringBoot 项目的 Controller 需要接受来自客户端的 HTTP 请求，这些请求中的数据可能直接放在 URI 中作为参数，也可能放在请求体中
 
 `@RequestParam` 就是用于解析直接传入的参数例如 /login?userName=abcd&password=123456
 
 `@RequestBody` 用于解析在请求体中的数据，可以解析复杂对象
+
+`@PathVariable` 用于解析数据作为 URI的一部分传入的情况，如传入一个 ID：`DELETE /user/10001`，表示删除 ID 为 10001 的用户
 
 ## 3 使用 Postman 测试
 
