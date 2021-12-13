@@ -1,0 +1,105 @@
+---
+title: OES之四：请求接口
+author: BeiyanLuansheng
+date: 2021-12-13 19:45:48 +0800
+categories: [技术积累, Spring-OES]
+tags: [Spring, SpringBoot, RESTful]
+math: true
+mermaid: true
+---
+
+## 1 RESTful接口
+
+REST（Representational State Transfer）表述性状态转换，REST指的是一组架构约束条件和原则
+
+### 1.1 URI
+
+几点规范：
+
+- 不用大写
+
+- 用减号连接 `-`，不用下划线 `_` 连接；
+
+- URI中的名词表示资源集合，使用复数形式
+
+- URI不使用动词，通过方法表示动作
+
+- 参数列表要encode
+
+- 避免层级过深的URI
+
+- 访问 Composite 资源要通过父实体。比如用户地址，地址脱离用户没有意义，所以URI要先访问 user，再访问 address，即 /user/address
+
+
+### 1.2 request
+
+#### 方法
+
+通过标准HTTP方法对资源CRUD：
+
+- GET：查询
+
+- POST：创建单个资源
+
+- PUT：更新单个资源（全量），客户端提供完整的更新后的资源
+
+- PATCH：负责部分更新，与 PUT 对应，客户端提供要更新的那些字段。PUT/PATCH 一般仅操作单个资源
+
+- DELETE：删除
+
+#### 格式
+
+1. Content-Type: application/json
+
+```json
+POST /user HTTP/1.1
+Host: api.example.org
+Accept: application/json
+Content-Type: application/json
+Content-Length: 24
+ 
+{   
+  "userName": "abcd",
+  "password": "123456"
+}
+```
+
+2. Content-Type: application/x-www-form-urlencoded (浏览器POST表单用的格式)
+
+```
+POST /login HTTP/1.1
+Host: api.example.org
+Content-Length: 31
+Accept: text/html
+Content-Type: application/x-www-form-urlencoded
+ 
+userName=abcd&password=123456
+```
+
+3. Content-Type: multipart/form-data; boundary=—-RANDOM_jDMUxq4Ot5 (表单有文件上传时的格式)
+
+
+## 2 @RequestParam 与 @RequestBody
+
+SpringBoot 项目的 Controller 需要接受来自客户端的 HTTP 请求，这些请求中的数据可能直接放在 URI 中作为参数，也可能放在请求体中
+
+`@RequestParam` 就是用于解析直接传入的参数例如 /login?userName=abcd&password=123456
+
+`@RequestBody` 用于解析在请求体中的数据，可以解析复杂对象
+
+## 3 使用 Postman 测试
+
+传参数测试
+
+![image-20211213203814967](/oes/image-20211213203814967.png)
+
+传对象测试
+
+![image-20211213203949951](/oes/image-20211213203949951.png)
+
+![image-20211213204012173](/oes/image-20211213204012173.png)
+
+
+## 参考
+
+https://blog.csdn.net/qq_41606973/article/details/86352787
