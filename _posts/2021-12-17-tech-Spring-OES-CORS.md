@@ -1,0 +1,247 @@
+---
+title: OES之五：跨域请求
+author: BeiyanLuansheng
+date: 2021-12-16 18:04:37 +0800
+categories: [技术积累, Spring-OES]
+tags: [Spring, SpringBoot, RESTful]
+math: true
+mermaid: true
+---
+
+由于本项目是完全前后端分离的设计，所以前端在使用后端接口的时候必然涉及到跨域请求
+
+## 1 跨域
+
+CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）
+
+> 当两个域具有相同的通信协议, 相同的端口，相同的host，那么我们就可以认为它们是相同的域（协议，域名，端口都必须相同）。跨域就指着协议，域名，端口不一致，出于安全考虑，跨域的资源之间是无法交互的(例如一般情况跨域的JavaScript无法交互)
+
+整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。
+
+因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。
+
+
+## 2 请求
+
+浏览器将CORS请求分成两类：简单请求（simple request）和非简单请求（not-so-simple request）。
+
+只要同时满足以下两大条件，就属于简单请求。
+
+（1) 请求方法是以下三种方法之一：`HEAD`、`GET`、`POST`
+
+（2）HTTP的头信息不超出以下几种字段（没有自定义字段）：`Accept`、`Accept-Language`、`Content-Language`、`Last-Event-ID`、`Content-Type`
+
+> 需要注意的是 `Content-Type` 只限于三个值 application/x-www-form-urlencoded、multipart/form-data、text/plain
+
+> 这是为了兼容表单（form），因为历史上表单一直可以发出跨域请求。AJAX 的跨域设计就是，只要表单可以发，AJAX 就可以直接发。
+
+凡是不同时满足上面两个条件，就属于非简单请求。
+
+## 3 简单请求
+
+对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个 `Origin` 字段。
+
+```
+GET /cors HTTP/1.1
+Origin: http://example.org
+Host: example.org
+Accept-Language: en-US
+Connection: keep-alive
+User-Agent: Mozilla/5.0...
+```
+
+`Origin` 字段用来说明本次请求来自哪个源（协议 + 域名 + 端口）。服务端根据这个值，决定是否同意这次请求。
+
+- 如果 Origin 源不在许可范围内，服务器会返回一个正常的 HTTP 回应。浏览器发现，这个回应的头信息没有包含 `Access-Control-Allow-Origin` 字段，就知道出错了，从而抛出一个错误，被 `XMLHttpRequest` 的 `onerror` 回调函数捕获。注意，这种错误无法通过状态码识别，因为 HTTP 回应的状态码有可能是200。（参见5.1节）
+
+- 如果 Origin 源在许可范围内，服务器返回的响应会多出几个头信息字段。
+
+```
+Access-Control-Allow-Origin: http://example.org
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: FooBar
+Content-Type: text/html; charset=utf-8
+```
+
+- `Access-Control-Allow-Origin`：是HTML5中定义的一种解决资源跨域的策略。该字段是必须的。它的值要么是请求时Origin字段的值表示该域可以请求数据，要么是一个 `*` 表示同意任意跨源请求
+
+- `Access-Control-Allow-Credentials`：可选字段是一个布尔值表示**是否允许发送Cookie**。默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器明确许可，Cookie可以包含在请求中，一起发给服务器。这个值也只能设为true，如果服务器不要浏览器发送Cookie，删除该字段即可。
+
+- `Access-Control-Expose-Headers`：该字段可选。CORS请求时，`XMLHttpRequest` 对象的 `getResponseHeader()` 方法只能拿到6个基本字段：Cache-Control、Content-Language、Content-Type、Expires、Last-Modified、Pragma。如果想拿到其他字段，就必须在此字段指定。上面的例子指定，`getResponseHeader('FooBar')` 可以返回 `FooBar` 字段的值。
+
+> 需要注意的是，如果要发送Cookie，Access-Control-Allow-Origin就不能设为星号，必须指定明确的、与请求网页一致的域名。同时，Cookie依然遵循同源政策，只有用服务器域名设置的Cookie才会上传，其他域名的Cookie并不会上传，且（跨源）原网页代码中的document.cookie也无法读取服务器域名下的Cookie
+
+## 4 非简单请求
+
+非简单请求是那种对服务器有特殊要求的请求，比如请求方法是 `PUT` 或 `DELETE`，或者 `Content-Type` 字段的类型是 `application/json`。
+
+非简单请求的CORS请求，会在正式通信之前，增加一次HTTP查询请求，称为"预检"请求（preflight）。浏览器先询问服务器，当前网页所在的域名是否在服务器的许可名单之中，以及可以使用哪些HTTP动词和头信息字段。只有得到肯定答复，浏览器才会发出正式的 XMLHttpRequest 请求，否则就报错。
+
+如下是一个 PUT 请求，自定义了一个 `My-custom-header` 头
+
+```
+PUT /cors HTTP/1.1
+My-custom-header: value
+Origin: http://example.org
+Host: example.org
+Accept-Language: en-US
+Connection: keep-alive
+User-Agent: Mozilla/5.0...
+```
+
+浏览器发现这是一个非简单请求，就自动发出一个"预检"请求，这是一个 OPTIONS 方法的 HTTP 请求
+
+```
+OPTIONS /cors HTTP/1.1
+Origin: http://example.org
+Access-Control-Request-Method: PUT
+Access-Control-Request-Headers: My-custom-header
+Host: example.org
+Accept-Language: en-US
+Connection: keep-alive
+User-Agent: Mozilla/5.0...
+```
+
+- Access-Control-Request-Method：该字段是必须的，用来列出浏览器的 CORS 请求会用到的 HTTP 方法，上例是 PUT。
+
+- Access-Control-Request-Headers：该字段是一个逗号分隔的字符串，指定浏览器CORS请求会额外发送的头信息字段，上例是 My-custom-header
+
+预检请求的回应
+
+```
+HTTP/1.1 200 OK
+Date: Mon, 01 Dec 2008 01:15:39 GMT
+Server: Apache/2.0.61 (Unix)
+Access-Control-Allow-Origin: http://example.org
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: My-custom-header
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 1728000
+Content-Type: text/html; charset=utf-8
+Content-Encoding: gzip
+Content-Length: 0
+Keep-Alive: timeout=2, max=100
+Connection: Keep-Alive
+Content-Type: text/plain
+```
+
+- `Access-Control-Allow-Origin`：同简单请求时的含义
+
+- `Access-Control-Allow-Methods`：必需字段，值是逗号分隔的字符串表明服务器支持的所有跨域请求的方法
+
+- `Access-Control-Allow-Headers`：如果请求包括Access-Control-Request-Headers字段，则此字段是必需。同样是逗号分隔的字符串表明服务器支持的所有头信息字段，不限于浏览器在"预检"中请求的字段。
+
+- `Access-Control-Allow-Credentials`：同简单请求时的含义
+
+- `Access-Control-Max-Age`：可选字段，用来指定本次预检请求的有效期，单位为秒。上面结果中，有效期是20天（1728000秒），即允许缓存该条回应1728000秒，在此期间，不用发出另一条预检请求。
+
+## 5 服务端处理请求
+
+### 5.1 服务端未处理跨域请求
+
+后端在没有对跨域请求做处理时，前端（浏览器）会抛出如下的异常信息
+
+`Access to XMLHttpRequest at 'http://localhost:8089/test' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
+
+> 此处新建了一个React项目简单地发送了一个Get请求，React项目的域就是 `http://localhost:3000`
+
+### 5.2 解决方案
+
+现在有两（三）种解决方案
+
+1. `Filter`
+
+实现一个 `Filter` 接口，使用 `@WebFiler` 注解标明拦截的URL，然后对 response 的 header 进行字段的设置
+
+```java
+import org.springframework.stereotype.Component;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+@WebFilter(urlPatterns = "/*", filterName = "CORSFilter")
+public class CORSFilter implements Filter {
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) res;
+        HttpServletRequest reqs = (HttpServletRequest) req;
+        String curOrigin = reqs.getHeader("Origin");
+        response.setHeader("Access-Control-Allow-Origin", curOrigin == null ? "true" : curOrigin);
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, PUT");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        chain.doFilter(req, res);
+    }
+
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+        System.out.println("CORSFilter Config complete");
+    }
+
+    @Override
+    public void destroy() {}
+}
+```
+
+2. `WebMvcConfigurer`
+
+这个下面其实有两种方案，建议直接实现 `WebMvcConfigurer` 接口，如下
+
+```java
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CORSConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT","PATCH")
+                .maxAge(3600);
+    }
+}
+```
+
+另一种是之前的方案，但是现在已经被废弃。`WebMvcConfigurerAdapter` 实际上还是实现 `WebMvcConfigurer` 的一个抽象类，jdk1.8之后就不需要这个Adapter了
+
+```java
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@Configuration
+public class CorsConfig extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+
+}
+```
+
+## 参考
+
+[https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS)
+
+[https://www.ruanyifeng.com/blog/2016/04/cors.html](https://www.ruanyifeng.com/blog/2016/04/cors.html)
+

@@ -26,8 +26,7 @@ mermaid: true
 - OES
    ├── oes-biz [系统功能实现]
    ├── oes-common [通用工具类]
-   ├── oes-gateway [网关]
-   ├── oes-start [启动类]
+   ├── oes-start [启动类及网关]
    |     ├── src [源文件]
    |     |    ├── main [工程主文件]
    |     |    |    ├── java [代码]
@@ -57,7 +56,6 @@ mermaid: true
     <modules>
         <module>oes-biz</module>
         <module>oes-common</module>
-        <module>oes-gateway</module>
         <module>oes-start</module>
     </modules>
 
