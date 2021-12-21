@@ -8,7 +8,7 @@ math: true
 mermaid: true
 ---
 
-## 1. 形式化定义
+## 1 形式化定义
 
 **图灵机(Turing Machine)**：TM是一个七元组$P=(Q,\,\Sigma,\,\Gamma,\,\delta,\,q_0,B,\,F)$，其中，
 
@@ -54,7 +54,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 
 
-## 2. 构造
+## 2 构造
 
 **例**：设计一个TM计算两个正整数x和y的和，即 x+y。
 
@@ -78,7 +78,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 
 
-## 3. 双栈自动机 (Two Stack Machine)
+## 3 双栈自动机 (Two Stack Machine)
 
 状态转移函数：$\delta(q, a, X , Y ) = (p, \alpha, \beta)$ 图示：
 
@@ -92,7 +92,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 
 
-## 4. 图灵机编码
+## 4 图灵机编码
 
 ### 1 字符串排序枚举
 
@@ -180,7 +180,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 
 
-## 6. 乔姆斯基文法
+## 6 乔姆斯基文法
 
 乔姆斯基文法一共分为四型：
 

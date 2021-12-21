@@ -8,7 +8,7 @@ math: true
 mermaid: true
 ---
 
-## 1. 正则表达式
+## 1 正则表达式
 
 正则表达式的递归定义：
 
@@ -33,7 +33,7 @@ mermaid: true
 > 3. {w \| length(w) ≥ 3 and the third symbol is 0 }
 > 4. What language does the RegExp $\phi^*$ represent ?
 
-## 2. 正则表达式和FA的等价性
+## 2 正则表达式和FA的等价性
 
 ### 1 等价性
 
@@ -93,7 +93,7 @@ mermaid: true
 
 
 
-##  3. 正则语言的性质
+##  3 正则语言的性质
 
 ### 1 泵引理 (Pumping lemma)
 
