@@ -36,7 +36,7 @@ mermaid: true
 
 > 上图表示的是确定的图灵机，删除 $q_6$ 得到的是不确定的图灵机，也可以识别语言 L
 
-### 1. 瞬时描述
+### 1 瞬时描述
 
 用 $X_1... X_{i-1}qX_i X_{i+1}...X_n$ 的形式表示图灵机在某一时刻所处的格局，q表示图灵机所处的状态，读写头指向的位置为状态符q右侧的字符，即 $X_i$ 。
 
@@ -44,7 +44,7 @@ mermaid: true
 XaYbq_2cc┝X aYq_3bZc┝X aq_3YbZc┝Xq_3aYbZc┝q_3XaYbZc┝Xq_0aYbZc┝XXq_1YbZc┝XXYq_1bZc ┝
 XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
-### 2. 停机
+### 2 停机
 
 读了某个字符X之后，图灵机仍在状态q，不做任何动作，没有进行状态转移，简言之就是在状态q读入X没有相应的状态转移函数 。
 
@@ -94,7 +94,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 ## 4. 图灵机编码
 
-### 1. 字符串排序枚举
+### 1 字符串排序枚举
 
 对 $w\in \{0,1\}^*$ 按照长度排序：$\varepsilon,0,1,00,01,10,11,000,001,010,011,...$
 
@@ -102,7 +102,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 则可发现，若把 $1w$ 视为二进制数，则如果 $w$ 是第 $i$ 个字符串就有 $1w=i$
 
-### 2. 编码
+### 2 编码
 
 对于TM $M = (Q, \{0,1\}, \Gamma, \delta, q_1, B, \{q_2\})$，其中 $Q ={q_1,q_2, ...,q_r}$，$\Gamma=\{X_1,X_2,X_3, ...,X_s\}$，并规定 $X_1=0， X_2=1，X_3=B，D_1=L，D_2=R$，$q_1$ 是初始状态，$q_2$ 是终结状态。
 
@@ -126,13 +126,13 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 ## 5. TM接受的语言
 
-### 1. 递归可枚举语言
+### 1 递归可枚举语言
 
 能够由图灵机接受的语言称为**递归可枚举语言(recursively enumerable language)**：$L=\{w\;\|\; q_0w┝^* \alpha p\beta,\; p\in F,\; \alpha,\;\beta\in \Gamma^*\}$
 
 > 所有的正则语言都是递归可枚举语言，所有的上下文无关语言都是递归可枚举语言。
 
-### 2. 非递归可枚举语言
+### 2 非递归可枚举语言
 
 **定理**：$L_d=\{ w_i \;\|\; w_i \in L(M_i) \}$ 就是一个**非递归可枚举语言(not-recursively enumerable language)**，即没有TM接受它。
 
@@ -143,7 +143,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 所以推出矛盾，假设错误。
 
-### 3. 递归语言
+### 3 递归语言
 
 如果存在TM $M$ 接受 $L$ 且满足下面两个条件，则称 $L$ 是**递归语言 (Recursive languages)**。
 
@@ -163,7 +163,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 
 > 这个定理证明的时候构造的是一个有两个tape的图灵机。
 
-### 4. 通用语言
+### 4 通用语言
 
 一个语言 $L$ ，它**是递归可枚举的但不是递归的**，即如果 $w\in L$ 则对应的 $M$ 接受它，但如果 $w\notin L$ 则 $M$ 不接受它且不会停机，则称它为**通用语言 (Universal language)**。$L_u = \{ (M,w) \| w \in L(M) \}$ 就是一个通用语言，其中 $M$ 是对应图灵机的编码，$w$ 是图灵机接受的字符串，连接成 $Mw$，记为 $(M,w)$。
 
@@ -174,7 +174,7 @@ XXYYq_2Zc┝XXYYZq_2c┝XXYYq_3ZZ┝...┝XXYYZZq_3$
 - Tape3：图灵机的状态；例：0，用0的个数表示状态
 - Tape4：模拟图灵机的处理过程；
 
-### 5. 语言的范畴
+### 5 语言的范畴
 
 <img src="/flaa/image-20200715104631004.png" alt="image-20200715104631004" style="zoom:80%;" />
 
