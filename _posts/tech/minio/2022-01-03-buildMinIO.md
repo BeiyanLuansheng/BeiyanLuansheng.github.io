@@ -69,3 +69,11 @@ MinIO 的默认访问端口是 9000，而我们在启动Docker 时把 9000 映�
 ![image-20220110113816138](/minio/image-20220110113816138.png)
 
 如果文件类型不支持在线预览则会直接下载
+
+## 参考
+
+<https://mp.weixin.qq.com/s/qHjOEeQ3CaA0U4a2YBi3Pw>
+
+<https://tonybai.com/2020/03/16/build-high-performance-object-storage-with-minio-part1-prototype/>
+
+<https://juejin.cn/post/6997202001834541069>
