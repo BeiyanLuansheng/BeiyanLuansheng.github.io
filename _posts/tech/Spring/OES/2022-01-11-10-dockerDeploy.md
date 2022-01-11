@@ -74,6 +74,10 @@ sudo docker run -p 3306:3306 --name oesmysql -v /home/admin/mysql/data:/var/lib/
 
 - 服务端口为 3306，映射到 3306
 
+> 远程客户端连接时需要设置连接参数 `allowPublicKeyRetrieval=true`
+>
+> 否则报错 `Public Key Retrieval is not allowed`
+
 ## 部署 OES
 
 ### Docker 打包
